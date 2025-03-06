@@ -6,7 +6,7 @@ class CustomerPage extends StatefulWidget {
   const CustomerPage({super.key});
 
   @override
-  _CustomerPageState createState() => _CustomerPageState();
+  State<CustomerPage> createState() => _CustomerPageState();
 }
 
 class _CustomerPageState extends State<CustomerPage> {

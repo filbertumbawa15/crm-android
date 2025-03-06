@@ -46,11 +46,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               onTap: () {},
             ),
             DashboardSmallCard(
-              icon: Icons.map,
-              title: "Kunjungan/Kegiatan",
-              onTap: () {},
-            ),
-            DashboardSmallCard(
               icon: Icons.calendar_today,
               title: "Absensi",
               onTap: () {},
@@ -58,7 +53,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             DashboardSmallCard(
               icon: Icons.map,
               title: "Visit",
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, '/listvisit');
+              },
             ),
             DashboardSmallCard(
               icon: Icons.book_online,
