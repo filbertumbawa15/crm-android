@@ -1,12 +1,10 @@
-import 'package:crm_android/components/image_preview_screen.dart';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
+import 'package:image_picker/image_picker.dart';
 import 'package:crm_android/components/input_decoration.dart';
 import 'package:crm_android/components/upload_placeholder.dart';
-import 'package:crm_android/constants/variables.dart';
-import 'package:crm_android/models/response/customer_response_model.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 
 class VisitEntryScreen extends StatefulWidget {
   const VisitEntryScreen({super.key});
@@ -17,8 +15,8 @@ class VisitEntryScreen extends StatefulWidget {
 
 class _VisitEntryScreenState extends State<VisitEntryScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController _placeController = TextEditingController();
   final TextEditingController _addressController = TextEditingController();
+  List<TextEditingController> picControllers = [TextEditingController()];
   TimeOfDay? _checkInTime;
   TimeOfDay? _checkOutTime;
   File? _checkInPhoto;
@@ -52,17 +50,37 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
 
   // Function to pick image
   Future<void> _pickImage(bool isCheckIn) async {
-    // final pickedFile =
-    //     await ImagePicker().pickImage(source: ImageSource.gallery);
-    // if (pickedFile != null) {
-    //   setState(() {
-    //     if (isCheckIn) {
-    //       _checkInPhoto = File(pickedFile.path);
-    //     } else {
-    //       _checkOutPhoto = File(pickedFile.path);
-    //     }
-    //   });
-    // }
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.camera);
+    if (pickedFile != null) {
+      File originalFile = File(pickedFile.path);
+      File stampedFile = await _addTimestamp(originalFile);
+      setState(() {
+        if (isCheckIn) {
+          _checkInPhoto = File(stampedFile.path);
+        } else {
+          _checkOutPhoto = File(stampedFile.path);
+        }
+      });
+    }
+  }
+
+  Future<File> _addTimestamp(File imageFile) async {
+    img.Image image = img.decodeImage(await imageFile.readAsBytes())!;
+
+    // Get current date & time
+    String timestamp =
+        DateTime.now().toString().split('.')[0]; // Format: YYYY-MM-DD HH:mm:ss
+
+    // Draw text on image
+img.drawString(image, timestamp, font: img.arial24, x: 10, y: image.height - 40, color: img.ColorInt8.rgb(255, 255, 255));
+
+    // Save new image
+    Directory tempDir = await getTemporaryDirectory();
+    File newFile = File('${tempDir.path}/stamped_image.jpg')
+      ..writeAsBytesSync(img.encodeJpg(image));
+
+    return newFile;
   }
 
   // Submit Form
@@ -88,6 +106,18 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
       ));
       Navigator.pop(context);
     }
+  }
+
+  void addAddressField() {
+    setState(() {
+      picControllers.add(TextEditingController());
+    });
+  }
+
+  void _removeAddressField(int index) {
+    setState(() {
+      picControllers.removeAt(index);
+    });
   }
 
   @override
@@ -194,6 +224,32 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
 
               const SizedBox(height: 10),
 
+              ...List.generate(picControllers.length, (index) {
+                return Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5.0),
+                        child: TextField(
+                          style: const TextStyle(fontFamily: 'Lato'),
+                          controller: picControllers[index],
+                          decoration: borderinputDecoration(
+                              "PIC (Jabatan) ${index + 1}"),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle, color: Colors.red),
+                      onPressed: picControllers.length > 1
+                          ? () => _removeAddressField(index)
+                          : null,
+                    ),
+                  ],
+                );
+              }),
+
+              const SizedBox(height: 10),
+
               // Check-in Time
               ListTile(
                 title: Text(
@@ -297,6 +353,14 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
                 child: const Text(
                   "Submit",
                   style: TextStyle(fontFamily: 'Lato'),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: addAddressField,
+                  icon: const Icon(Icons.add),
+                  label: const Text("Add Address"),
                 ),
               ),
             ],
