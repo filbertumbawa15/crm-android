@@ -3,6 +3,8 @@ import 'package:crm_android/screen/customer.dart';
 import 'package:crm_android/screen/dashboard.dart';
 import 'package:crm_android/screen/home.dart';
 import 'package:crm_android/screen/listvisit.dart';
+import 'package:crm_android/screen/visit_form.dart';
+import 'package:crm_android/screen/visitdetail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +36,8 @@ class _MyAppState extends State<MyApp> {
           '/': (context) => const StartScreen(),
           '/customers': (context) => const CustomerPage(),
           '/listvisit': (context) => const SalesVisitLogScreen(),
+          '/visitdetail': (context) => const VisitDetailScreen(),
+          '/formvisit': (context) => const VisitEntryScreen(),
         },
       ),
     );

@@ -15,10 +15,16 @@ class _SalesVisitLogScreenState extends State<SalesVisitLogScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text(
-        "Sales Visit",
-        style: TextStyle(fontFamily: 'Lato'),
-      )),
+        title: const Text("Sales Visit", style: TextStyle(fontFamily: 'Lato')),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add), // Add visit icon
+            onPressed: () {
+              Navigator.pushNamed(context, '/formvisit');
+            },
+          ),
+        ],
+      ),
       body: Column(
         children: [
           // Tab Navigation
@@ -62,79 +68,85 @@ class SalesVisitCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "RSUD. Pringadi", // Visited Place Name
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Lato'),
-            ),
-            const SizedBox(height: 4),
-            const Row(
-              children: [
-                Icon(Icons.location_pin, color: Colors.purple),
-                SizedBox(width: 2),
-                Expanded(
-                    child: Text(
-                  "Jalan Patimura Gg. Sabar No. 15A Komp. Amasari Medan",
-                  style: TextStyle(
-                      fontSize: 14, color: Colors.grey, fontFamily: 'Lato'),
-                )),
-              ],
-            ),
-            // const Text(
-            //   "123 Main St, City, Country", // Address
-            //   style: TextStyle(fontSize: 14, color: Colors.grey),
-            // ),
-            const Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.login, color: Colors.blue),
-                        SizedBox(width: 3),
-                        Text(
-                          "Check-in: 09:00 AM",
-                          style: TextStyle(fontFamily: 'Lato'),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5.0),
-                    // Text("Check-in: 08:30 AM"),
-                    Row(
-                      children: [
-                        Icon(Icons.logout, color: Colors.black),
-                        SizedBox(width: 3),
-                        Text(
-                          "Check-out: 11:00 AM",
-                          style: TextStyle(fontFamily: 'Lato'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Image.asset('assets/images/checkin.jpg', width: 40),
-                    const SizedBox(width: 10),
-                    // if (visit['checkOutTime'] != null)
-                    Image.asset('assets/images/checkout.jpg', width: 40),
-                  ],
-                ),
-              ],
-            ),
-          ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, '/visitdetail');
+      },
+      child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "RSUD. Pringadi", // Visited Place Name
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    fontFamily: 'Lato'),
+              ),
+              const SizedBox(height: 4),
+              const Row(
+                children: [
+                  Icon(Icons.location_pin, color: Colors.purple),
+                  SizedBox(width: 2),
+                  Expanded(
+                      child: Text(
+                    "Jalan Patimura Gg. Sabar No. 15A Komp. Amasari Medan",
+                    style: TextStyle(
+                        fontSize: 14, color: Colors.grey, fontFamily: 'Lato'),
+                  )),
+                ],
+              ),
+              // const Text(
+              //   "123 Main St, City, Country", // Address
+              //   style: TextStyle(fontSize: 14, color: Colors.grey),
+              // ),
+              const Divider(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Icon(Icons.login, color: Colors.blue),
+                          SizedBox(width: 3),
+                          Text(
+                            "Check-in: 09:00 AM",
+                            style: TextStyle(fontFamily: 'Lato'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 5.0),
+                      // Text("Check-in: 08:30 AM"),
+                      Row(
+                        children: [
+                          Icon(Icons.logout, color: Colors.black),
+                          SizedBox(width: 3),
+                          Text(
+                            "Check-out: 11:00 AM",
+                            style: TextStyle(fontFamily: 'Lato'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Image.asset('assets/images/checkin.jpg', width: 40),
+
+                      const SizedBox(width: 10),
+                      // if (visit['checkOutTime'] != null)
+                      Image.asset('assets/images/checkout.jpg', width: 40),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
