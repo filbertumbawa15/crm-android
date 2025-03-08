@@ -67,13 +67,13 @@ class _VisitDetailScreenState extends State<VisitDetailScreen> {
                       const SizedBox(height: 8),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ImagePreviewScreen(
-                                  imagePath: 'assets/images/checkin.jpg'),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const ImagePreviewScreen(
+                          //         imagePath: 'assets/images/checkin.jpg'),
+                          //   ),
+                          // );
                         },
                         child: Hero(
                             tag: 'assets/images/checkin.jpg',
@@ -98,13 +98,13 @@ class _VisitDetailScreenState extends State<VisitDetailScreen> {
                       const SizedBox(height: 8),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ImagePreviewScreen(
-                                  imagePath: 'assets/images/checkout.jpg'),
-                            ),
-                          );
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => const ImagePreviewScreen(
+                          //         imagePath: 'assets/images/checkout.jpg'),
+                          //   ),
+                          // );
                         },
                         child: Hero(
                             tag: 'assets/images/checkout.jpg',

@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class ImagePreviewScreen extends StatelessWidget {
-  final String imagePath;
+  final File imagePath;
 
   const ImagePreviewScreen({super.key, required this.imagePath});
 
@@ -16,7 +18,7 @@ class ImagePreviewScreen extends StatelessWidget {
         child: Center(
           child: Hero(
             tag: imagePath,
-            child: Image.asset(imagePath),
+            child: Image.file(imagePath),
           ),
         ),
       ),

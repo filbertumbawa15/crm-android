@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:crm_android/components/draw_large_text.dart';
+import 'package:crm_android/components/image_preview_screen.dart';
+import 'package:crm_android/components/load_bm_font.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
@@ -66,16 +69,17 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
   }
 
   Future<File> _addTimestamp(File imageFile) async {
+    img.BitmapFont customFont = await loadBMFont();
     img.Image image = img.decodeImage(await imageFile.readAsBytes())!;
 
     // Get current date & time
-    String timestamp =
-        DateTime.now().toString().split('.')[0]; // Format: YYYY-MM-DD HH:mm:ss
+    String timestamp = DateTime.now().toString().split('.')[0];
 
-    // Draw text on image
-img.drawString(image, timestamp, font: img.arial24, x: 10, y: image.height - 40, color: img.ColorInt8.rgb(255, 255, 255));
+    int x = 10;
+    int y = image.height - 40;
 
-    // Save new image
+    drawLargeText(image, timestamp, x, y, customFont);
+
     Directory tempDir = await getTemporaryDirectory();
     File newFile = File('${tempDir.path}/stamped_image.jpg')
       ..writeAsBytesSync(img.encodeJpg(image));
@@ -288,33 +292,43 @@ img.drawString(image, timestamp, font: img.arial24, x: 10, y: image.height - 40,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () => _pickImage(true),
-                        child: _checkInPhoto != null
-                            ? Image.file(_checkInPhoto!,
-                                height: 100, fit: BoxFit.cover)
-                            : uploadPlaceholder(),
-                      ),
+                      _checkInPhoto != null
+                          ? GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => ImagePreviewScreen(
+                                        imagePath: _checkInPhoto!),
+                                  ),
+                                );
+                              },
+                              child: Image.file(_checkInPhoto!,
+                                  height: 150, width: 150, fit: BoxFit.cover),
+                            )
+                          : uploadPlaceholder(
+                              onTap: () => _pickImage(true),
+                            ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      const Text(
-                        "Check-out Photo",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () => _pickImage(true),
-                        child: _checkInPhoto != null
-                            ? Image.file(_checkInPhoto!,
-                                height: 100, fit: BoxFit.cover)
-                            : uploadPlaceholder(),
-                      ),
-                    ],
-                  ),
+                  // Column(
+                  //   children: [
+                  //     const Text(
+                  //       "Check-out Photo",
+                  //       style: TextStyle(
+                  //         fontFamily: 'Lato',
+                  //       ),
+                  //     ),
+                  //     const SizedBox(height: 8),
+                  //     GestureDetector(
+                  //       onTap: () => _pickImage(true),
+                  //       child: _checkInPhoto != null
+                  //           ? Image.file(_checkInPhoto!,
+                  //               height: 100, fit: BoxFit.cover)
+                  //           : uploadPlaceholder(),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
 
