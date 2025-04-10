@@ -1,8 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:crm_android/components/draw_large_text.dart';
 import 'package:crm_android/components/image_preview_screen.dart';
 import 'package:crm_android/components/load_bm_font.dart';
+import 'package:crm_android/constants/variables.dart';
+import 'package:dio/dio.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:crm_android/components/input_decoration.dart';
@@ -69,16 +74,31 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
   }
 
   Future<File> _addTimestamp(File imageFile) async {
-    img.BitmapFont customFont = await loadBMFont();
     img.Image image = img.decodeImage(await imageFile.readAsBytes())!;
 
-    // Get current date & time
-    String timestamp = DateTime.now().toString().split('.')[0];
+    const now = '17 Feb 2025 16.26.56';
+
+    final ByteData data = await rootBundle.load('assets/fonts/Unnamed.zip');
+    final List<int> fontZipBytes = data.buffer.asUint8List();
+    final font = img.BitmapFont.fromZip(fontZipBytes);
 
     int x = 10;
-    int y = image.height - 40;
+    int y = image.height - 850;
 
-    drawLargeText(image, timestamp, x, y, customFont);
+    final text = '''
+$now
+19 Jalan Ayahanda
+Sei Putih Tengah
+Kecamatan Medan Petisah
+Kota Medan
+Sumatera Utara''';
+
+    final lines = text.split('\n');
+
+    for (final line in lines) {
+      img.drawString(image, line, font: font, x: x, y: y);
+      y += font.lineHeight;
+    }
 
     Directory tempDir = await getTemporaryDirectory();
     File newFile = File('${tempDir.path}/stamped_image.jpg')
@@ -197,19 +217,31 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
               //     ),
               //   ),
               // ),
-              DropdownButtonFormField<String>(
-                style: const TextStyle(fontFamily: 'Lato'),
-                value: selectedCustomer,
-                decoration: borderinputDecoration("Select Customer"),
-                items: customers.map((customer) {
-                  return DropdownMenuItem<String>(
-                    value: customer,
-                    child: Text(
-                      customer,
-                      style: const TextStyle(fontFamily: 'Lato'),
-                    ),
-                  );
-                }).toList(),
+              DropdownSearch<String>(
+                items: (String filter, LoadProps? props) async {
+                  try {
+                    final response = await Dio().get(
+                      Variables.rapidApiUrl,
+                    );
+
+                    // Ubah hasil response sesuai struktur data dari API kamu
+                    List<String> customers = (response.data as List)
+                        .map((item) => item['name'].toString())
+                        .toList();
+
+                    return customers;
+                  } catch (e) {
+                    return [];
+                  }
+                },
+                selectedItem: selectedCustomer,
+                decoratorProps: DropDownDecoratorProps(
+                  decoration: borderinputDecoration("Select Customer"),
+                  baseStyle: const TextStyle(fontFamily: 'Lato'),
+                ),
+                popupProps: const PopupProps.menu(
+                  showSearchBox: true,
+                ),
                 onChanged: (value) {
                   setState(() {
                     selectedCustomer = value;
@@ -374,7 +406,7 @@ class _VisitEntryScreenState extends State<VisitEntryScreen> {
                 child: TextButton.icon(
                   onPressed: addAddressField,
                   icon: const Icon(Icons.add),
-                  label: const Text("Add Address"),
+                  label: const Text("Tambah PIC"),
                 ),
               ),
             ],
