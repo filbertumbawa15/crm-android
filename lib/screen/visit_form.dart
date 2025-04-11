@@ -218,7 +218,7 @@ Sumatera Utara''';
               //   ),
               // ),
               DropdownSearch<String>(
-                items: (String filter, LoadProps? props) async {
+                asyncItems: (String filter) async {
                   try {
                     final response = await Dio().get(
                       Variables.rapidApiUrl,
@@ -235,8 +235,9 @@ Sumatera Utara''';
                   }
                 },
                 selectedItem: selectedCustomer,
-                decoratorProps: DropDownDecoratorProps(
-                  decoration: borderinputDecoration("Select Customer"),
+                dropdownDecoratorProps: DropDownDecoratorProps(
+                  dropdownSearchDecoration:
+                      borderinputDecoration("Select Customer"),
                   baseStyle: const TextStyle(fontFamily: 'Lato'),
                 ),
                 popupProps: const PopupProps.menu(
